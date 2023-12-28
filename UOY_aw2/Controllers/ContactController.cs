@@ -44,7 +44,6 @@ public class ContactController : ControllerBase
     {
         var fromdb = await dbContext.Set<Contact>().Where(x => x.Id == id).FirstOrDefaultAsync();
         fromdb.CustomerId = contact.CustomerId;
-        fromdb.AccountNumber = contact.AccountNumber;
 
         await dbContext.SaveChangesAsync();
     }
