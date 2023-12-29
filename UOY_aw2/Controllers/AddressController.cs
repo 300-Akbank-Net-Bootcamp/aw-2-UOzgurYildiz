@@ -28,8 +28,12 @@ public class AddressController : ControllerBase
     {
         var address =  await dbContext.Set<Address>()
             .Where(x => x.Id == id).FirstOrDefaultAsync();
-       
-        return address;
+        
+        if(address is null)
+            throw new ArgumentException("Address for given ID not found.");
+        
+        else
+            return address;
     }
 
     [HttpPost]
@@ -45,7 +49,7 @@ public class AddressController : ControllerBase
         var fromdb = await dbContext.Set<Address>().Where(x => x.Id == id).FirstOrDefaultAsync();
         
         if(fromdb is null)
-            throw new ArgumentException("EFT Transaction for given ID not found.");
+            throw new ArgumentException("Address for given ID not found.");
         
         else
             fromdb.CustomerId = address.CustomerId;
@@ -58,7 +62,7 @@ public class AddressController : ControllerBase
         var fromdb = await dbContext.Set<Address>().Where(x => x.Id == id).FirstOrDefaultAsync();
         
         if(fromdb is null)
-            throw new ArgumentException("EFT Transaction for given ID not found.");
+            throw new ArgumentException("Address for given ID not found.");
         
         else
             fromdb.IsDefault = false;

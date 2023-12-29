@@ -28,8 +28,11 @@ public class AccountTransactionController : ControllerBase
     {
         var account =  await dbContext.Set<AccountTransaction>()
             .Where(x => x.Id == id).FirstOrDefaultAsync();
-       
-        return account;
+        
+        if(account is null)
+            throw new ArgumentException("Transaction for given ID not found.");
+        else
+            return account;
     }
 
     [HttpPost]
@@ -43,10 +46,13 @@ public class AccountTransactionController : ControllerBase
     public async Task Put(int id, [FromBody] AccountTransaction accountTransaction)
     {
         var fromdb = await dbContext.Set<AccountTransaction>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.AccountId = accountTransaction.AccountId;
-        fromdb.ReferenceNumber = accountTransaction.ReferenceNumber;
 
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+            throw new ArgumentException("Transaction for given ID not found.");
+        else
+            fromdb.AccountId = accountTransaction.AccountId;
+            fromdb.ReferenceNumber = accountTransaction.ReferenceNumber;
+            await dbContext.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]

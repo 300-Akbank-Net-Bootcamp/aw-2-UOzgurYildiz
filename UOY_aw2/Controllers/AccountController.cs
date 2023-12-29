@@ -30,8 +30,12 @@ public class AccountController : ControllerBase
             .Include(x=> x.AccountTransactions)
             .Include(x=> x.EftTransactions)
             .Where(x => x.Id == id).FirstOrDefaultAsync();
-       
-        return account;
+        
+        if(account is null)
+            throw new ArgumentException("Account for given ID not found.");
+
+        else       
+            return account;
     }
 
     [HttpPost]
@@ -45,17 +49,24 @@ public class AccountController : ControllerBase
     public async Task Put(int id, [FromBody] Account account)
     {
         var fromdb = await dbContext.Set<Account>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.CustomerId = account.CustomerId;
-        fromdb.AccountNumber = account.AccountNumber;
 
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+            throw new ArgumentException("Account for given ID not found.");
+        else
+            fromdb.CustomerId = account.CustomerId;
+            fromdb.AccountNumber = account.AccountNumber;
+            await dbContext.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
     public async Task Delete(int id)
     {
         var fromdb = await dbContext.Set<Account>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.IsActive = false;
-        await dbContext.SaveChangesAsync();
+
+        if(fromdb is null)
+            throw new ArgumentException("Account for given ID not found.");
+        else
+            fromdb.IsActive = false;
+            await dbContext.SaveChangesAsync();
     }
 }

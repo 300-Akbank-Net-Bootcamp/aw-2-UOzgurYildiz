@@ -30,7 +30,7 @@ public class ContactController : ControllerBase
             .Where(x => x.Id == id).FirstOrDefaultAsync();
 
         if(contact is null)
-            throw new ArgumentException("EFT Transaction for given ID not found.");
+            throw new ArgumentException("Contact info for given ID not found.");
         else
             return contact;
     }
@@ -47,7 +47,7 @@ public class ContactController : ControllerBase
     {
         var fromdb = await dbContext.Set<Contact>().Where(x => x.Id == id).FirstOrDefaultAsync();
         if(fromdb is null)
-            throw new ArgumentException("EFT Transaction for given ID not found.");
+            throw new ArgumentException("Contact info for given ID not found.");
         
         else
             fromdb.CustomerId = contact.CustomerId;
@@ -59,7 +59,7 @@ public class ContactController : ControllerBase
     {
         var fromdb = await dbContext.Set<Contact>().Where(x => x.Id == id).FirstOrDefaultAsync();
         if(fromdb is null)
-            throw new ArgumentException("EFT Transaction for given ID not found.");
+            throw new ArgumentException("Contact info for given ID not found.");
         else
             fromdb.IsDefault = false;
             await dbContext.SaveChangesAsync();
