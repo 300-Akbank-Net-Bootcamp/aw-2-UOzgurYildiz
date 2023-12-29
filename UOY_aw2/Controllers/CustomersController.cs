@@ -31,8 +31,11 @@ public class CustomersController : ControllerBase
             .Include(x=> x.Addresses)
             .Include(x=> x.Contacts)
             .Where(x => x.Id == id).FirstOrDefaultAsync();
-       
-        return customer;
+
+        if(customer is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        else
+            return customer;
     }
 
     [HttpPost]
@@ -46,17 +49,24 @@ public class CustomersController : ControllerBase
     public async Task Put(int id, [FromBody] Customer customer)
     {
         var fromdb = await dbContext.Set<Customer>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.FirstName = customer.FirstName;
-        fromdb.LastName = customer.LastName;
 
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        else
+            fromdb.FirstName = customer.FirstName;
+            fromdb.LastName = customer.LastName;
+            await dbContext.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
     public async Task Delete(int id)
     {
         var fromdb = await dbContext.Set<Customer>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.IsActive = false;
-        await dbContext.SaveChangesAsync();
+
+        if(fromdb is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        else
+            fromdb.IsActive = false;
+            await dbContext.SaveChangesAsync();
     }
 }

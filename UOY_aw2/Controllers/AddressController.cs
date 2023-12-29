@@ -43,17 +43,25 @@ public class AddressController : ControllerBase
     public async Task Put(int id, [FromBody] Address address)
     {
         var fromdb = await dbContext.Set<Address>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.CustomerId = address.CustomerId;
-
-        await dbContext.SaveChangesAsync();
+        
+        if(fromdb is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        
+        else
+            fromdb.CustomerId = address.CustomerId;
+            await dbContext.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
     public async Task Delete(int id)
     {
         var fromdb = await dbContext.Set<Address>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.IsDefault = false;
         
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        
+        else
+            fromdb.IsDefault = false;
+            await dbContext.SaveChangesAsync();
     }
 }

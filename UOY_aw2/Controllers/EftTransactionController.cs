@@ -28,6 +28,9 @@ public class EftTransactionController : ControllerBase
     {
         var eftTransaction =  await dbContext.Set<EftTransaction>()
             .Where(x => x.Id == id).FirstOrDefaultAsync();
+
+        if(eftTransaction is null)
+              throw new ArgumentException("EFT Transaction for given ID not found.");
        
         return eftTransaction;
     }
@@ -43,17 +46,25 @@ public class EftTransactionController : ControllerBase
     public async Task Put(int id, [FromBody] Account account)
     {
         var fromdb = await dbContext.Set<Account>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.CustomerId = account.CustomerId;
-        fromdb.AccountNumber = account.AccountNumber;
 
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+            throw new ArgumentException("EFT Transaction for given ID not found.");
+        
+        else
+            fromdb.CustomerId = account.CustomerId;
+            fromdb.AccountNumber = account.AccountNumber;
+            await dbContext.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
     public async Task Delete(int id)
     {
         var fromdb = await dbContext.Set<Account>().Where(x => x.Id == id).FirstOrDefaultAsync();
-        fromdb.IsActive = false;
-        await dbContext.SaveChangesAsync();
+        if(fromdb is null)
+              throw new ArgumentException("EFT Transaction for given ID not found.");
+        
+        else
+            fromdb.IsActive = false;
+            await dbContext.SaveChangesAsync();
     }
 }
